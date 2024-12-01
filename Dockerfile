@@ -7,5 +7,7 @@ FROM nginx:1.21
 # 로컬 빌드 결과물 복사
 COPY build /usr/share/nginx/html
 
+EXPOSE 3000
+
 # 기본 Nginx 실행 명령
 CMD ["nginx", "-g", "daemon off;"]
