@@ -1,0 +1,42 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: Node.js CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. 소스 코드를 체크아웃 
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    # 2. Node.js 설치 
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20' # 필요한 Node.js 버전
+        
+    # 3. React 빌드
+    - name: Install dependencies and build
+      run: |
+        npm install
+        npm run build
+
+    # 4. Docker 빌드 및 Push
+    - name: Build & push Docker image
+      uses: mr-smithers-excellent/docker-build-push@v5
+      with:
+        image: bit1010/react
+        tags: latest, ${{ github.run_number }}
+        registry: docker.io
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
